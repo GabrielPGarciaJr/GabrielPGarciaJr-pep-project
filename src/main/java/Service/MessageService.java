@@ -25,9 +25,6 @@ public class MessageService {
         return messageDAO.addMessage(message); 
     }
 
-    //public void deleteMessage(int id)
-    //{ messageDAO.deleteMessage(id);}
-
       //get all messages
       public List<Message> getAllMessage()
       {
@@ -37,5 +34,17 @@ public class MessageService {
       public Message getMessage(String id)
       {
         return messageDAO.getMessage(id);
+      }
+      public List<Message> getUserMessage(String id)
+      {
+        return messageDAO.getUserMessage(id);
+      }
+      public Message deleteMessage(String id)
+      {
+        return messageDAO.deleteMessage(id);
+      }
+      public Message updateMessage(String text, String id)
+      {
+        return messageDAO.updateMessage(text, id);
       }
 }

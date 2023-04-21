@@ -39,8 +39,9 @@ public class SocialMediaController {
         app.post("/messages", this::postMessageHandler);
         app.get("/messages", this::getAllMessageHandler);
         app.get("/messages/{message_id}", this::getMessageHandler);
-        //app.delete("/messages/{message_id}", this::deleteMessageHandler);
-        //app.post("/messages", this::updateMessageHandler);//<- need to check if post or put?
+        app.get("/accounts/{accounts_id}/messages", this::getUserMessageHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageHandler);
+        app.put("/messages/{message_id}", this::updateMessageHandler);
         return app;
     }
 
@@ -97,6 +98,29 @@ public class SocialMediaController {
         context.status(200);
     }
     
+    private void deleteMessageHandler(Context context) throws JsonProcessingException{
+        Message message = messageService.deleteMessage(context.pathParam("{message_id}"));
+        if(message!= null)
+        {
+            context.json(message);
+        }
+        else 
+        context.json("");
+
+        context.status(200);
+    }
+
+    private void getUserMessageHandler(Context context) throws JsonProcessingException{
+
+        List<Message> messages = messageService.getUserMessage(context.pathParam("{accounts_id}"));
+        if(messages!= null)
+        {
+            context.json(messages); 
+            context.status(200);
+        }else 
+        context.status(200);
+    }
+    
     private void getMessageHandler(Context context) throws JsonProcessingException{
 
         Message manages = messageService.getMessage(context.pathParam("{message_id}"));
@@ -107,13 +131,8 @@ public class SocialMediaController {
         }else 
         context.status(200);
     }
-    /*    
-    
-    private void updateMessageHandler(Context context) {
-        context.json("sample text");
+  
+    private void updateMessageHandler(Context context) throws JsonProcessingException{
+       
     }
-    private void deleteMessageHandler(Context context) {
-        
-    }
-    */
 }
