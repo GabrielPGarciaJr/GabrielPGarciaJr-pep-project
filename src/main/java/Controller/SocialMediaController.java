@@ -28,7 +28,8 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.post("/register", this::postAccountHandler);
-        //app.get("/login", this::getAccountHandler);
+        System.out.println(" 1 1 1 ");
+        app.post("/login", this::getAccountHandler);
         //app.post("/messages", this::postMessageHandler);
         //app.get("/messages", this::getAllMessageHandler);
         //app.get("/messages/{message_id}", this::getMessageHandler);
@@ -44,25 +45,19 @@ public class SocialMediaController {
      * @throws JsonMappingException
      */
     private void postAccountHandler(Context context) throws JsonProcessingException {
-        System.out.println("in newUser act 0");
         ObjectMapper mapper = new ObjectMapper();
         Account user = mapper.readValue(context.body(),Account.class);
         Account newUser = accountService.addAccount(user);
         
-        System.out.println("in newUser act 1");
         if(newUser!=null && newUser.getPassword().length() > 4 && newUser.getUsername() != "")
         {
-            System.out.println("in newUser act 2");
             context.json(mapper.writeValueAsString(newUser));
             context.status(200);
         }else{
-            
-            System.out.println("in newUser act 3");
             context.status(400);
         }
     }
-    /* 
-    private void getAccountHandler(Context context) throws JsonMappingException, JsonProcessingException {
+    private void getAccountHandler(Context context) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account user = mapper.readValue(context.body(),Account.class);
         Account ifUser = accountService.getAccount(user);
@@ -74,6 +69,7 @@ public class SocialMediaController {
             context.status(401);
         }
     }
+    /* 
     private void postMessageHandler(Context context) {
         context.json("sample text");
     }

@@ -19,7 +19,6 @@ public class AccountService {
     //add user
     public Account addAccount(Account user)
     {
-        System.out.println("in adding act 0");
         return accountDAO.addUser(user);        
     }
     //get user
