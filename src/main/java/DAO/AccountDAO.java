@@ -65,33 +65,6 @@ public class AccountDAO {
         }
         return null;    
     }
-    /*
-     * 
-     //get all user
-     public List<Account> getUsers()
-     {
-         Connection connection = ConnectionUtil.getConnection();
-         List <Account> account = new ArrayList<>();
-         try{    
-             String sql = "SELECT * FROM Account";
-             PreparedStatement preparedStatement = connection.prepareStatement(sql);
- 
-             ResultSet resultSet = preparedStatement.executeQuery();
-             while(resultSet.next())
-             {
-                 Account user = new Account
-                 (
-                     resultSet.getInt("account_id"), 
-                     resultSet.getString("username"),
-                     resultSet.getString("password")
-                 );
-                 account.add(user);
-             }
-         }catch(SQLException e)
-         {
-             System.out.println(e.getMessage());
-         }
-         return account;    
-     }
-     */
+    
+     
 }
