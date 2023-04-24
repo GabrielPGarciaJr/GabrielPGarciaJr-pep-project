@@ -43,8 +43,8 @@ public class MessageService {
       {
         return messageDAO.deleteMessage(id);
       }
-      public Message updateMessage(String text, String id)
+      public void updateMessage(String text, String id)
       {
-        return messageDAO.updateMessage(text, id);
+        messageDAO.updateMessage(text, id);
       }
 }

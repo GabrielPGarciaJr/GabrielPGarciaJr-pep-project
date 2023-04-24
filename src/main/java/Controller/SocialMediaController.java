@@ -7,8 +7,6 @@ import Service.AccountService;
 import Service.MessageService;
 
 import java.util.*;
-
-//import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
@@ -40,8 +38,9 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessageHandler);
         app.get("/messages/{message_id}", this::getMessageHandler);
         app.get("/accounts/{accounts_id}/messages", this::getUserMessageHandler);
-        app.delete("/messages/{message_id}", this::deleteMessageHandler);
-        app.put("/messages/{message_id}", this::updateMessageHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageHandler);        
+        app.patch("/messages/{message_id}", this::updateMessageHandler);
+        
         return app;
     }
 
@@ -122,17 +121,32 @@ public class SocialMediaController {
     }
     
     private void getMessageHandler(Context context) throws JsonProcessingException{
-
-        Message manages = messageService.getMessage(context.pathParam("{message_id}"));
-        if(manages!= null)
+        System.out.println("Start get message");
+        Message menages = messageService.getMessage(context.pathParam("{message_id}"));
+        if(menages!= null)
         {
-            context.json(manages); 
+            context.json(menages); 
             context.status(200);
         }else 
         context.status(200);
     }
   
     private void updateMessageHandler(Context context) throws JsonProcessingException{
-       
+
+        ObjectMapper mapper = new ObjectMapper();
+        Message newMessage = mapper.readValue(context.body(), Message.class);
+        Message oldMessage = messageService.getMessage(context.pathParam("{message_id}"));
+
+        if(oldMessage!=null && newMessage.getMessage_text() != "" && newMessage.getMessage_text().length() < 255)
+        {
+            messageService.updateMessage(newMessage.getMessage_text(), context.pathParam("{message_id}"));
+            Message updateMessage = messageService.getMessage(context.pathParam("{message_id}"));
+            if(updateMessage == null) context.status(400);
+            else{                
+                context.status(200);
+                context.json(updateMessage);
+            }
+        }else context.status(400);
+
     }
 }
