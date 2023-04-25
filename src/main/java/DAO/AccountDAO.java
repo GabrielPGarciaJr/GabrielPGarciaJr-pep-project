@@ -8,8 +8,12 @@ import java.sql.*;
 //import java.util.List;
 
 public class AccountDAO {
-    //adding a user
-    public Account addUser(Account user)
+    /**
+     * Post/Add Account
+     * @param Account user
+     * @return Account 
+     */
+    public Account postAccount(Account user)
     {
         Connection connection = ConnectionUtil.getConnection();
         try{
@@ -36,11 +40,17 @@ public class AccountDAO {
         
         return null;    
     }
-    //get a user
-    public Account getUser(String username, String password)
+    /**
+     * Get the user account 
+     * @param username
+     * @param password
+     * @return A account
+     */
+    public Account getUserAccount(String username, String password)
     {
         Connection connection = ConnectionUtil.getConnection();
         try{    
+            //get account only if username and password are found 
             String sql = "SELECT * FROM Account WHERE username = ? AND password = ?; ";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -65,6 +75,39 @@ public class AccountDAO {
         }
         return null;    
     }
-    
+
+    /**
+     * Check if a user exist 
+     * @param username
+     * @return boolean if account exist or not.
+     */
+    public Boolean checkAccountExist(String username)
+    {
+        Connection connection = ConnectionUtil.getConnection();
+        try{    
+            String sql = "SELECT * FROM Account WHERE username = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, username);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next())
+            {
+                
+                Account user = new Account
+                (
+                    resultSet.getInt("account_id"), 
+                    resultSet.getString("username"),
+                    resultSet.getString("password")
+                );
+                if(user!=null)
+                    return true;
+            }
+        }catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        return false;  
+    }
      
 }

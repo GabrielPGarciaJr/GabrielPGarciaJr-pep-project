@@ -7,14 +7,19 @@ import Util.ConnectionUtil;
 //import java.sql.PreparedStatement;
 //import java.sql.ResultSet;
 ///import java.sql.SQLException;
+import net.bytebuddy.asm.Advice.OffsetMapping.ForStackManipulation.OfDefaultValue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessageDAO {
     
-    // adding a message
-    public Message addMessage(Message message)
+    /**
+     * Post/add a message
+     * @param Message message
+     * @return A Message
+     */
+    public Message postMessage(Message message)
     { 
         Connection connection = ConnectionUtil.getConnection();
         try{
@@ -42,7 +47,10 @@ public class MessageDAO {
         return null;
     }
  
-    //getting all messages
+    /**
+     * Get a list of all messages
+     * @return List of Messages
+     */
     public List<Message> getAllMessage()
     {
         Connection connection = ConnectionUtil.getConnection();
@@ -66,7 +74,12 @@ public class MessageDAO {
         return messages;
     }
     
-    //getting a message using message id
+
+    /**
+     * Get a message using message_id
+     * @param String id = message_id
+     * @return a message
+     */
     public Message getMessage(String id)
     {
         Connection connection = ConnectionUtil.getConnection();
@@ -90,7 +103,11 @@ public class MessageDAO {
         }catch(SQLException e){System.out.println(e.getMessage());}
         return null;
     }
-    //getting a message using message id
+    /**
+     * Get a user's message using account_id
+     * @param String id = account_id
+     * @return List of All Message's a Account has
+     */
     public List<Message> getUserMessage(String id)
     {
         Connection connection = ConnectionUtil.getConnection();        
@@ -117,25 +134,22 @@ public class MessageDAO {
     }
 
 
-    //delete
+    /**
+     * Delete a message useing message_id
+     * @param String id = message_id
+     * @return the deleted message or null if message was not found
+     */
     public Message deleteMessage(String id)
-    {
-        
+    {        
         Connection connection = ConnectionUtil.getConnection();
-        Message checkMessage = new Message();
         try{
             
-            checkMessage = getMessage(id);
-
-            if(checkMessage != null) 
-            {
-                String sql = "DELETE FROM Message WHERE posted_by = ?;";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);    
-                preparedStatement.setString(1, id);
-                
-                preparedStatement.execute();
-                return checkMessage;
-            }
+            String sql = "DELETE FROM Message WHERE posted_by = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);    
+            preparedStatement.setString(1, id);
+            
+            preparedStatement.execute();
+            return getMessage(id);
 
         }catch(SQLException e)
         {
@@ -145,15 +159,20 @@ public class MessageDAO {
     }
 
     //update a message using message id
-    public void updateMessage(String text, String id)
+    /**
+     * PATCH/update a message using message_id
+     * @param String text to replace old text
+     * @param String id = message_id
+     */
+    public void updateMessage(Message newMessage, Message oldMessage)
     {
         Connection connection = ConnectionUtil.getConnection();         
         try{            
             String sql = "UPDATE Message SET message_text = ? WHERE message_id = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             
-            preparedStatement.setString(1, text);
-            preparedStatement.setString(2, id);
+            preparedStatement.setString(1, newMessage.getMessage_text());
+            preparedStatement.setInt(2, oldMessage.getMessage_id());
 
             preparedStatement.executeUpdate();
         }catch(SQLException e){System.out.println(e.getMessage());}
